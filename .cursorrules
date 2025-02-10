@@ -101,8 +101,192 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 - Add debug information to stderr while keeping the main output clean in stdout for better pipeline integration
 - When using seaborn styles in matplotlib, use 'seaborn-v0_8' instead of 'seaborn' as the style name due to recent seaborn version changes
 - Use 'gpt-4o' as the model name for OpenAI's GPT-4 with vision capabilities
+- When using react-native-draggable-flatlist, the types are included in the package itself, no need for @types/react-native-draggable-flatlist
 
 # Scratchpad
+
+# LanGo App Implementation Plan
+
+## Current Task: Implementation of Missing Features
+This is a comprehensive tracking system for implementing missing features in the LanGo app, focusing on language learning and interactive games.
+
+### Phase 1: Core Reader Features
+[X] 1. File Management System
+    [X] Upload interface design
+    [X] File validation system
+    [X] Progress indicators
+    [X] Storage integration with Firebase
+    [X] File format conversion if needed
+
+[X] 2. Reading Experience Features - Basic Setup
+    [X] File upload/download
+    [X] Progress tracking
+    [X] Error handling
+    [X] File listing
+
+[X] 3. Reading Experience Features - Advanced
+    [X] Bookmarking system
+        [X] Bookmark creation/deletion
+        [X] Visual bookmark indicators
+        [X] Bookmark list view
+        [X] Sync with cloud storage
+    [X] Annotation system
+        [X] Text highlighting
+        [X] Note taking interface
+        [X] Annotation management
+        [X] Export functionality
+    [X] Navigation improvements
+        [X] Chapter navigation UI
+        [X] Progress bar
+        [X] Page number display
+        [X] Jump to page functionality
+    [X] Search functionality
+        [X] Full-text search
+        [X] Search history
+        [X] Advanced search options
+        [X] Result highlighting
+    [X] Table of contents
+        [X] Auto-generation
+        [X] Interactive navigation
+        [X] Nested chapter support
+    [X] Reading settings
+        [X] Font size control
+        [X] Theme selection
+        [X] Line spacing
+        [X] Margin adjustment
+        [X] Font family selection
+
+### Phase 2: TTS and Audio Features
+[X] 1. Google Cloud TTS Integration
+    [X] API Setup
+        [X] Google Cloud project configuration
+        [X] API credentials management
+        [X] Environment variables setup
+        [X] API quota monitoring
+    [X] Voice Configuration
+        [X] Available voices listing
+        [X] Language-specific voice mapping
+        [X] Voice quality settings (Standard, Neural2, Studio)
+        [X] Voice customization options
+    [X] Audio Output Management
+        [X] Audio format handling (MP3, WAV, OGG)
+        [X] Sample rate optimization
+        [X] Audio effects support
+        [X] Volume normalization
+
+[X] 2. TTS Performance Optimization
+    [X] Caching System
+        [X] Local audio caching
+        [X] Cache invalidation strategy
+        [X] Storage optimization
+        [X] Preloading for common phrases
+    [X] Request Management
+        [X] Request batching
+        [X] Rate limiting implementation
+        [X] Error handling and retry logic
+        [X] Fallback voices
+    [X] Offline Support
+        [X] Offline voice data management
+        [X] Local TTS fallback
+        [X] Sync queue for pending requests
+        [X] Background processing
+
+[X] 3. TTS Synchronization
+    [X] Word-Level Timing
+        [X] SSML markup integration
+        [X] Word boundary detection
+        [X] Timing metadata processing
+        [X] Real-time synchronization
+    [X] Playback Controls
+        [X] Play/Pause/Resume
+        [X] Speed adjustment (0.5x to 2x)
+        [X] Sentence repeat
+        [X] Position seeking
+    [X] Visual Feedback
+        [X] Word highlighting
+        [X] Sentence highlighting
+        [X] Progress indication
+        [X] Audio waveform display
+
+### Phase 3: Learning Games and Activities
+[X] 1. Vocabulary Games
+    [X] Flashcard System
+        [X] Basic flashcard creation
+        [X] Import from text/annotations
+        [X] Spaced repetition algorithm
+        [X] Progress tracking
+    [X] Word Matching Game
+        [X] Multiple difficulty levels
+        [X] Time-based challenges
+        [X] Score tracking
+        [X] Leaderboards
+    [X] Word Search Puzzle
+        [X] Dynamic puzzle generation
+        [X] Multiple categories
+        [X] Hint system
+        [X] Progress tracking
+    [X] Sentence Scramble
+        [X] Multiple difficulty levels
+        [X] Context-based hints
+        [X] Score tracking
+        [X] Progress analytics
+
+[ ] 2. Expression Practice
+    [ ] Fill in the Blanks
+        [ ] Context-based questions
+        [ ] Multiple choice options
+        [ ] Hint system
+        [ ] Performance tracking
+    [ ] Translation Practice
+        [ ] Sentence pairs
+        [ ] Audio support
+        [ ] Alternative translations
+        [ ] Feedback system
+
+[ ] 3. Interactive Exercises
+    [ ] Multiple Choice Questions
+        [ ] Question generation
+        [ ] Answer validation
+        [ ] Explanation system
+        [ ] Progress tracking
+    [ ] Writing Exercises
+        [ ] Prompt generation
+        [ ] Auto-correction
+        [ ] Grammar checking
+        [ ] Feedback system
+    [ ] Speaking Practice
+        [ ] Audio recording
+        [ ] Pronunciation checking
+        [ ] Feedback system
+        [ ] Progress tracking
+
+Progress Tracking:
+- Total Features: 49/49 completed in Phases 1-2
+- Current Phase: Phase 3 - Learning Games and Activities
+- Completed Features in Phase 3: 16/36
+- Next Steps:
+  1. Begin implementing Fill in the Blanks game
+  2. Design and implement Translation Practice feature
+  3. Create Multiple Choice Questions feature
+
+Notes:
+- Basic file management system is complete and working
+- Bookmark system implemented with cloud sync
+- Annotation system implemented with highlighting and tags
+- Navigation system implemented with chapter list and progress tracking
+- Page navigation system implemented with jump functionality
+- Search functionality implemented with history and highlighting
+- Table of contents implemented with nested chapters and auto-generation
+- Reading settings implemented with font size, theme, line spacing, margin, and font family controls
+- TTS service implemented with Google Cloud TTS integration
+- TTS state management implemented with Redux
+- TTS UI controls implemented with voice selection, speed, pitch, and volume controls
+- TTS caching system implemented for offline support
+- TTS synchronization implemented with word-level timing and visual feedback
+- Flashcard system implemented with spaced repetition
+- Word Matching game implemented with difficulty levels and scoring
+- Word Search Puzzle implemented with dynamic generation and progress tracking
+- Sentence Scramble game implemented with drag-and-drop word arrangement
 
 
 

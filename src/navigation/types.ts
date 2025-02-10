@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Reader: { bookId: string };
   Focus: undefined;
   Settings: undefined;
+  FileManagement: undefined;
   // Add more screens here as needed
 };
 

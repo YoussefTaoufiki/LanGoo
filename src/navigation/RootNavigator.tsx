@@ -9,6 +9,7 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { ReaderScreen } from '../screens/ReaderScreen';
 import { FocusScreen } from '../screens/FocusScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
+import { FileManagementScreen } from '../screens/FileManagementScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,7 +29,14 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Reader" component={ReaderScreen} />
         <Stack.Screen name="Focus" component={FocusScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
-        {/* Add more screens here as they are created */}
+        <Stack.Screen 
+          name="FileManagement" 
+          component={FileManagementScreen}
+          options={{
+            headerShown: true,
+            title: 'Manage Books'
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

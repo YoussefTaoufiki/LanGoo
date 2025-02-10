@@ -15,13 +15,14 @@ import { LoginScreen } from './src/screens/LoginScreen';
 import { SignUpScreen } from './src/screens/SignUpScreen';
 import { DashboardScreen } from './src/screens/DashboardScreen';
 import { RootStackParamList } from './src/navigation/types';
+import { lightTheme } from './src/theme/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <StoreProvider store={store}>
-      <PaperProvider>
+      <PaperProvider theme={lightTheme}>
         <NavigationContainer>
           <Stack.Navigator
             initialRouteName="Login"
