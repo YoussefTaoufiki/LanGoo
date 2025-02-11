@@ -6,22 +6,13 @@ const { getDefaultConfig } = require('@expo/metro-config');
  *
  * @type {import('@react-native/metro-config').MetroConfig}
  */
-const defaultConfig = getDefaultConfig(__dirname);
-
-defaultConfig.transformer.babelTransformerPath = require.resolve('metro-react-native-babel-transformer');
-
-defaultConfig.transformer.assetPlugins = ['expo-asset/tools/hashAssetFiles'];
+const config = getDefaultConfig(__dirname);
 
 module.exports = {
-  ...defaultConfig,
+  ...config,
   resolver: {
-    ...defaultConfig.resolver,
-    assetExts: [...defaultConfig.resolver.assetExts.filter(ext => ext !== 'svg'), 'db', 'mp3', 'ttf', 'obj', 'png', 'jpg'],
-    sourceExts: [...defaultConfig.resolver.sourceExts, 'svg']
-  },
-  transformer: {
-    ...defaultConfig.transformer,
-    babelTransformerPath: require.resolve('metro-react-native-babel-transformer'),
-    assetPlugins: ['expo-asset/tools/hashAssetFiles']
+    ...config.resolver,
+    assetExts: [...config.resolver.assetExts, 'db', 'mp3', 'ttf', 'obj', 'png', 'jpg'],
+    sourceExts: [...config.resolver.sourceExts, 'svg']
   }
 };
