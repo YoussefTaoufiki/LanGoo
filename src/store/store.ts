@@ -15,6 +15,11 @@ import flashcardReducer from './slices/flashcardSlice';
 import wordGameReducer from './slices/wordGameSlice';
 import wordSearchReducer from './slices/wordSearchSlice';
 import sentenceScrambleReducer from './slices/sentenceScrambleSlice';
+import fillInBlanksReducer from './slices/fillInBlanksSlice';
+import translationReducer from './slices/translationSlice';
+import writingExerciseReducer from './slices/writingExerciseSlice';
+import speakingPracticeReducer from './slices/speakingPracticeSlice';
+import vocabularyReducer from './slices/vocabularySlice';
 
 // Import reducers here as they are created
 // import authReducer from './slices/authSlice';
@@ -22,7 +27,26 @@ import sentenceScrambleReducer from './slices/sentenceScrambleSlice';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth', 'file', 'bookmark', 'annotation', 'navigation', 'search', 'toc', 'settings', 'tts', 'flashcard', 'wordGame', 'wordSearch', 'sentenceScramble'],
+  whitelist: [
+    'auth',
+    'file',
+    'bookmark',
+    'annotation',
+    'navigation',
+    'search',
+    'toc',
+    'settings',
+    'tts',
+    'flashcard',
+    'wordGame',
+    'wordSearch',
+    'sentenceScramble',
+    'fillInBlanks',
+    'translation',
+    'writingExercise',
+    'speakingPractice',
+    'vocabulary',
+  ],
 };
 
 const rootReducer = combineReducers({
@@ -39,6 +63,11 @@ const rootReducer = combineReducers({
   wordGame: wordGameReducer,
   wordSearch: wordSearchReducer,
   sentenceScramble: sentenceScrambleReducer,
+  fillInBlanks: fillInBlanksReducer,
+  translation: translationReducer,
+  writingExercise: writingExerciseReducer,
+  speakingPractice: speakingPracticeReducer,
+  vocabulary: vocabularyReducer,
   // Add more reducers here as they are created
 });
 

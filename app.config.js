@@ -27,9 +27,5 @@ export default {
   web: {
     favicon: './assets/favicon.png'
   },
-  plugins: [
-    'expo-apple-authentication',
-    'expo-auth-session'
-  ],
   scheme: 'lango'
 }; 
