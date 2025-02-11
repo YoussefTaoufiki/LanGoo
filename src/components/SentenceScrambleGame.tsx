@@ -55,7 +55,7 @@ const SentenceScrambleGame: React.FC<Props> = ({ bookId, difficulty, onClose }) 
     return () => {
       dispatch(endGame());
     };
-  }, [bookId, difficulty]);
+  }, [bookId, difficulty, dispatch]);
 
   const handleArrangementChange = (newArrangement: string[]) => {
     dispatch(updateArrangement(newArrangement));

@@ -1,3 +1,11 @@
+[Cursor] Initial commit
+
+- Set up React Native Expo project structure
+- Implemented Firebase Web SDK integration
+- Added authentication and annotation services
+- Configured TypeScript and dependencies
+- Added basic app configuration
+
 [Cursor] Update dependencies for Expo Snack compatibility
 
 - Update Expo SDK to version 50.0.7 and related packages

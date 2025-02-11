@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 export interface WordPair {
@@ -41,9 +41,9 @@ class WordGameService {
         .limit(count)
         .get();
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       } as WordPair));
     } catch (error) {
       console.error('Error getting word pairs:', error);
@@ -108,27 +108,21 @@ class WordGameService {
         .limit(limit)
         .get();
 
-      const scores = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      } as GameScore));
-
-      // Get user names
-      const userIds = [...new Set(scores.map(score => score.userId))];
-      const userDocs = await Promise.all(
-        userIds.map(userId => 
-          firestore().collection('users').doc(userId).get()
-        )
+      const scores = await Promise.all(
+        snapshot.docs.map(async (doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => {
+          const score = doc.data() as GameScore;
+          // Get user name
+          const userDoc = await firestore().collection('users').doc(score.userId).get();
+          const userName = userDoc.data()?.displayName || 'Anonymous';
+          return {
+            id: doc.id,
+            ...score,
+            userName,
+          } as LeaderboardEntry;
+        })
       );
 
-      const userNames = Object.fromEntries(
-        userDocs.map(doc => [doc.id, doc.data()?.displayName || 'Anonymous'])
-      );
-
-      return scores.map(score => ({
-        ...score,
-        userName: userNames[score.userId],
-      }));
+      return scores;
     } catch (error) {
       console.error('Error getting leaderboard:', error);
       throw error;
@@ -186,7 +180,7 @@ class WordGameService {
       let count = 0;
 
       for (const doc of annotations.docs) {
-        const annotation = doc.data();
+        const annotation = doc.data() as { highlightedText: string; note: string; text: string };
         if (annotation.highlightedText && annotation.note) {
           const wordPairRef = this.wordPairsCollection.doc();
           batch.set(wordPairRef, {
@@ -195,7 +189,7 @@ class WordGameService {
             difficulty: 'medium', // Default difficulty
             context: annotation.text,
             bookId,
-          });
+          } as Omit<WordPair, 'id'>);
           count++;
         }
       }

@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { GoogleCloudTTS } from './googleCloudTTS';
 
@@ -58,10 +58,10 @@ class TranslationPracticeService {
         throw new Error('No translation pairs available for the selected criteria');
       }
 
-      const pairs = snapshot.docs.map(doc => ({
+      const pairs = snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
-        ...doc.data(),
-      })) as TranslationPair[];
+        ...doc.data()
+      } as TranslationPair));
 
       // Randomly select a pair
       const randomIndex = Math.floor(Math.random() * pairs.length);
@@ -159,7 +159,10 @@ class TranslationPracticeService {
         .limit(10);
 
       const snapshot = await query.get();
-      return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as TranslationScore));
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
+        id: doc.id,
+        ...doc.data()
+      } as TranslationScore));
     } catch (error) {
       console.error('Error getting leaderboard:', error);
       throw new Error('Failed to get leaderboard');

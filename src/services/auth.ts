@@ -1,6 +1,7 @@
 import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as WebBrowser from 'expo-web-browser';
+import { AuthSessionResult } from 'expo-auth-session';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../store/slices/authSlice';
@@ -22,12 +23,16 @@ interface AppleError {
 const USERS_STORAGE_KEY = '@users';
 const CURRENT_USER_KEY = '@current_user';
 
-// Initialize Google Sign In
-const [googleRequest, googleResponse, promptGoogleAsync] = Google.useAuthRequest({
-  clientId: Constants.expoConfig?.extra?.webClientId,
-  androidClientId: Constants.expoConfig?.extra?.androidClientId,
-  iosClientId: Constants.expoConfig?.extra?.iosClientId,
-});
+// Custom hook for Google Sign In
+export const useGoogleAuth = () => {
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    clientId: Constants.expoConfig?.extra?.webClientId,
+    androidClientId: Constants.expoConfig?.extra?.androidClientId,
+    iosClientId: Constants.expoConfig?.extra?.iosClientId,
+  });
+
+  return { request, response, promptAsync };
+};
 
 export const signUp = async (
   email: string,
@@ -105,7 +110,7 @@ export const signIn = async (
   }
 };
 
-export const signInWithGoogle = async (): Promise<AuthResponse> => {
+export const signInWithGoogle = async (promptGoogleAsync: () => Promise<AuthSessionResult>): Promise<AuthResponse> => {
   try {
     const result = await promptGoogleAsync();
     

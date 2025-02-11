@@ -1,5 +1,11 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+
+interface Annotation {
+  text: string;
+  translation: string;
+  context?: string;
+}
 
 export interface SentenceScramblePuzzle {
   id?: string;
@@ -52,8 +58,8 @@ class SentenceScrambleGameService {
         .get();
 
       const sentences = annotations.docs
-        .map(doc => doc.data())
-        .filter(annotation => {
+        .map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => doc.data() as Annotation)
+        .filter((annotation) => {
           const wordCount = annotation.text.split(/\s+/).length;
           const config = this.DIFFICULTY_CONFIG[difficulty];
           return wordCount >= config.minWords && wordCount <= config.maxWords;
@@ -153,7 +159,10 @@ class SentenceScrambleGameService {
         .limit(limit)
         .get();
 
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SentenceScrambleScore));
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
+        id: doc.id,
+        ...doc.data()
+      } as SentenceScrambleScore));
     } catch (error) {
       console.error('Error getting sentence scramble leaderboard:', error);
       throw error;

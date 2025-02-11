@@ -43,7 +43,7 @@ const WordSearchGame: React.FC<Props> = ({ bookId, difficulty, onClose }) => {
     return () => {
       dispatch(endGame());
     };
-  }, [bookId, difficulty]);
+  }, [bookId, difficulty, dispatch]);
 
   const handleCellPress = (row: number, col: number) => {
     if (!startCell) {
@@ -160,15 +160,15 @@ const WordSearchGame: React.FC<Props> = ({ bookId, difficulty, onClose }) => {
                 const isSelected = selectedCells.some(
                   ([r, c]) => r === rowIndex && c === colIndex
                 );
-                const isFound = foundWords.some(word => {
+                const isFound = startCell && endCell ? foundWords.some(word => {
                   const cells = getLinePoints(
-                    startCell?.[0] || 0,
-                    startCell?.[1] || 0,
-                    endCell?.[0] || 0,
-                    endCell?.[1] || 0
+                    startCell[0],
+                    startCell[1],
+                    endCell[0],
+                    endCell[1]
                   );
                   return getSelectedWord(cells) === word;
-                });
+                }) : false;
 
                 return (
                   <TouchableOpacity

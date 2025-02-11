@@ -60,7 +60,7 @@ const TranslationPractice: React.FC<Props> = ({
     return () => {
       dispatch(endPractice());
     };
-  }, [bookId, difficulty, sourceLang, targetLang]);
+  }, [bookId, difficulty, sourceLang, targetLang, dispatch]);
 
   const handlePlayAudio = async () => {
     if (!currentPair || isPlaying) return;

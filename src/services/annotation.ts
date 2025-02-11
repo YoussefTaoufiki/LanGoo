@@ -15,6 +15,9 @@ export interface Annotation {
   color: string;
   createdAt: string;
   updatedAt: string;
+  cfi: string;
+  highlightedText: string;
+  tags: string[];
 }
 
 export const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<Annotation> => {
@@ -158,4 +161,16 @@ export const exportAnnotations = async (bookId: string): Promise<string> => {
     console.error('Error exporting annotations:', error);
     throw error;
   }
-}; 
+};
+
+export const annotationService = {
+  addAnnotation,
+  getAnnotations,
+  updateAnnotation,
+  deleteAnnotation,
+  getAnnotationsByChapter,
+  exportAnnotations,
+  createAnnotation: addAnnotation, // Alias for compatibility
+};
+
+export default annotationService; 

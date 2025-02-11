@@ -1,5 +1,10 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+
+interface Annotation {
+  text: string;
+  context?: string;
+}
 
 export interface FillInBlanksPuzzle {
   id?: string;
@@ -53,8 +58,8 @@ class FillInBlanksGameService {
         .get();
 
       const sentences = annotations.docs
-        .map(doc => doc.data())
-        .filter(annotation => {
+        .map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => doc.data() as Annotation)
+        .filter((annotation) => {
           const wordCount = annotation.text.split(/\s+/).length;
           return wordCount >= 5 && wordCount <= 15; // Reasonable sentence length
         });
@@ -110,7 +115,7 @@ class FillInBlanksGameService {
     return indices.slice(0, count);
   }
 
-  private generateOptions(correctWords: string[], sentences: any[], optionsPerBlank: number): string[] {
+  private generateOptions(correctWords: string[], sentences: Annotation[], optionsPerBlank: number): string[] {
     const allWords = sentences
       .map(sentence => sentence.text.split(/\s+/))
       .flat()

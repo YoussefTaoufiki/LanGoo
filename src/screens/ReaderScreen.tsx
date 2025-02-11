@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { ActivityIndicator, Appbar, Portal, Dialog, Text, Button } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -73,13 +73,7 @@ export const ReaderScreen: React.FC<Props> = ({ route, navigation }) => {
     error: '',
   });
 
-  useEffect(() => {
-    loadBook();
-    loadSettings();
-    loadSavedTranslations();
-  }, [bookId]);
-
-  const loadBook = async () => {
+  const loadBook = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -108,9 +102,9 @@ export const ReaderScreen: React.FC<Props> = ({ route, navigation }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [bookId]);
 
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const savedSettings = await epubService.getReaderSettings(bookId);
       if (savedSettings) {
@@ -119,7 +113,22 @@ export const ReaderScreen: React.FC<Props> = ({ route, navigation }) => {
     } catch (err) {
       console.error('Error loading settings:', err);
     }
-  };
+  }, [bookId]);
+
+  const loadSavedTranslations = useCallback(async () => {
+    try {
+      const saved = await translationService.getSavedTranslations(bookId);
+      setSavedTranslations(saved || []);
+    } catch (err) {
+      console.error('Error loading saved translations:', err);
+    }
+  }, [bookId]);
+
+  useEffect(() => {
+    loadBook();
+    loadSettings();
+    loadSavedTranslations();
+  }, [loadBook, loadSettings, loadSavedTranslations]);
 
   const handleSettingsChange = async (newSettings: ReaderSettings) => {
     setSettings(newSettings);
@@ -140,15 +149,6 @@ export const ReaderScreen: React.FC<Props> = ({ route, navigation }) => {
       };
       epubService.saveReadingProgress(progress);
       setBookInfo({ ...bookInfo, location });
-    }
-  };
-
-  const loadSavedTranslations = async () => {
-    try {
-      const saved = await translationService.getSavedTranslations(bookId);
-      setSavedTranslations(saved || []);
-    } catch (err) {
-      console.error('Error loading saved translations:', err);
     }
   };
 

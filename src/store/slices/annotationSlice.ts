@@ -18,8 +18,8 @@ const initialState: AnnotationState = {
 // Async thunks
 export const fetchAnnotations = createAsyncThunk(
   'annotation/fetchAnnotations',
-  async (bookId: string) => {
-    const annotations = await annotationService.getAnnotations(bookId);
+  async ({ bookId, chapterId }: { bookId: string; chapterId: string }) => {
+    const annotations = await annotationService.getAnnotations(bookId, chapterId);
     return { bookId, annotations };
   }
 );
@@ -115,7 +115,7 @@ const annotationSlice = createSlice({
             state.annotations[bookId][index] = {
               ...state.annotations[bookId][index],
               ...data,
-              updatedAt: Date.now(),
+              updatedAt: new Date().toISOString(),
             };
             break;
           }

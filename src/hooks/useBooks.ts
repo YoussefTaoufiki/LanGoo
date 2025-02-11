@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   collection,
   query,
@@ -34,7 +34,7 @@ export const useBooks = (): UseBooksReturn => {
   const [error, setError] = useState<Error | null>(null);
   const { selectedLanguage } = useLanguageSelection();
 
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     if (!selectedLanguage) {
       setBooks([]);
       setIsLoading(false);
@@ -72,11 +72,11 @@ export const useBooks = (): UseBooksReturn => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedLanguage]);
 
   useEffect(() => {
     fetchBooks();
-  }, [selectedLanguage]);
+  }, [fetchBooks]);
 
   return {
     books,

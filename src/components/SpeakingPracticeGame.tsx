@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -69,6 +69,33 @@ export const SpeakingPracticeGame: React.FC<SpeakingPracticeGameProps> = ({
   const [playbackProgress, setPlaybackProgress] = useState(0);
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer());
 
+  const stopPlayback = useCallback(async () => {
+    try {
+      await audioRecorderPlayer.current.stopPlayer();
+      audioRecorderPlayer.current.removePlayBackListener();
+      setIsPlaying(false);
+      setPlaybackProgress(0);
+    } catch (error) {
+      console.error('Error stopping playback:', error);
+    }
+  }, []);
+
+  const stopRecording = useCallback(async () => {
+    if (!isRecording) return;
+
+    try {
+      const result = await audioRecorderPlayer.current.stopRecorder();
+      audioRecorderPlayer.current.removeRecordBackListener();
+      dispatch(stopRecordingAction({
+        audioUrl: result,
+        duration: recordingDuration,
+      }));
+    } catch (error) {
+      console.error('Error stopping recording:', error);
+      Alert.alert('Error', 'Failed to stop recording');
+    }
+  }, [dispatch, isRecording, recordingDuration]);
+
   useEffect(() => {
     const loadPrompt = async () => {
       await dispatch(generatePrompt({ bookId, difficulty, language }));
@@ -78,7 +105,7 @@ export const SpeakingPracticeGame: React.FC<SpeakingPracticeGameProps> = ({
       stopRecording();
       stopPlayback();
     };
-  }, [bookId, difficulty, language, dispatch]);
+  }, [bookId, difficulty, language, dispatch, stopRecording, stopPlayback]);
 
   const startRecording = async () => {
     try {
@@ -118,22 +145,6 @@ export const SpeakingPracticeGame: React.FC<SpeakingPracticeGameProps> = ({
     }
   };
 
-  const stopRecording = async () => {
-    if (!isRecording) return;
-
-    try {
-      const result = await audioRecorderPlayer.current.stopRecorder();
-      audioRecorderPlayer.current.removeRecordBackListener();
-      dispatch(stopRecordingAction({
-        audioUrl: result,
-        duration: recordingDuration,
-      }));
-    } catch (error) {
-      console.error('Error stopping recording:', error);
-      Alert.alert('Error', 'Failed to stop recording');
-    }
-  };
-
   const playPromptAudio = async () => {
     if (!currentPrompt?.text) return;
 
@@ -164,17 +175,6 @@ export const SpeakingPracticeGame: React.FC<SpeakingPracticeGameProps> = ({
     } catch (error) {
       console.error('Error starting playback:', error);
       Alert.alert('Error', 'Failed to play recording');
-    }
-  };
-
-  const stopPlayback = async () => {
-    try {
-      await audioRecorderPlayer.current.stopPlayer();
-      audioRecorderPlayer.current.removePlayBackListener();
-      setIsPlaying(false);
-      setPlaybackProgress(0);
-    } catch (error) {
-      console.error('Error stopping playback:', error);
     }
   };
 
@@ -382,6 +382,9 @@ const createStyles = (theme: CustomTheme) => StyleSheet.create({
   closeButtonText: {
     fontSize: 24,
     color: theme.colors.text,
+  },
+  content: {
+    flex: 1,
   },
   promptContainer: {
     backgroundColor: theme.colors.surface,

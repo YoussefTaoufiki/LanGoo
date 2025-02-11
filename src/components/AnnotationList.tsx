@@ -24,7 +24,7 @@ export const AnnotationList: React.FC<AnnotationListProps> = ({
   }));
 
   useEffect(() => {
-    void dispatch(fetchAnnotations(bookId));
+    void dispatch(fetchAnnotations({ bookId, chapterId: '' }));
   }, [dispatch, bookId]);
 
   const handleDeleteAnnotation = async (id: string) => {
@@ -61,7 +61,7 @@ export const AnnotationList: React.FC<AnnotationListProps> = ({
         )}
         {item.tags && item.tags.length > 0 && (
           <View style={styles.tagsContainer}>
-            {item.tags.map((tag) => (
+            {item.tags.map((tag: string) => (
               <Chip
                 key={tag}
                 style={styles.tag}

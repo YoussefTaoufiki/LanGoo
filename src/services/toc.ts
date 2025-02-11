@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 export interface TocEntry {
@@ -88,9 +88,9 @@ class TableOfContentsService {
         .orderBy('index')
         .get();
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
-        ...doc.data(),
+        ...doc.data()
       } as TocEntry));
     } catch (error) {
       console.error('Error getting TOC:', error);

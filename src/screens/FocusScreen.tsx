@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Button, IconButton, ProgressBar, Portal, Dialog, List } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,6 +21,12 @@ export const FocusScreen: React.FC<Props> = ({ navigation }) => {
   const [showDurationPicker, setShowDurationPicker] = useState(false);
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
 
+  const handleSessionComplete = useCallback(() => {
+    setIsRunning(false);
+    setSessionsCompleted((prev) => prev + 1);
+    setTimeLeft(duration * 60);
+  }, [duration]);
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isRunning && timeLeft > 0) {
@@ -31,13 +37,7 @@ export const FocusScreen: React.FC<Props> = ({ navigation }) => {
       handleSessionComplete();
     }
     return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
-
-  const handleSessionComplete = () => {
-    setIsRunning(false);
-    setSessionsCompleted((prev) => prev + 1);
-    setTimeLeft(duration * 60);
-  };
+  }, [isRunning, timeLeft, handleSessionComplete]);
 
   const toggleTimer = () => {
     setIsRunning(!isRunning);

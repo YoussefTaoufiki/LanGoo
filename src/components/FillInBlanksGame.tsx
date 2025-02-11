@@ -47,7 +47,7 @@ const FillInBlanksGame: React.FC<Props> = ({ bookId, difficulty, onClose }) => {
     return () => {
       dispatch(endGame());
     };
-  }, [bookId, difficulty]);
+  }, [bookId, difficulty, dispatch]);
 
   const handleBlankPress = (index: number) => {
     setSelectedBlankIndex(index);

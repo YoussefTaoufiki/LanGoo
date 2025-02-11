@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import Sound from 'react-native-sound';
 import { GoogleCloudTTS } from './googleCloudTTS';
@@ -251,10 +251,10 @@ class SpeakingPracticeService {
         .limit(10)
         .get();
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
-        ...doc.data(),
-      })) as SpeakingScore[];
+        ...doc.data()
+      } as SpeakingScore));
     } catch (error) {
       console.error('Error getting speaking leaderboard:', error);
       throw error;

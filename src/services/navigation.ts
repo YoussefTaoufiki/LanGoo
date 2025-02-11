@@ -32,6 +32,13 @@ export interface PageInfo {
   cfi: string;
 }
 
+class NotImplementedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotImplementedError';
+  }
+}
+
 class NavigationService {
   private chaptersCollection = firestore().collection('chapters');
   private progressCollection = firestore().collection('reading_progress');
@@ -46,7 +53,7 @@ class NavigationService {
         .orderBy('index')
         .get();
 
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
         ...doc.data(),
       } as Chapter));
@@ -152,7 +159,7 @@ class NavigationService {
       // 1. Parse the CFI to get chapter information
       // 2. Query the chapters collection
       // 3. Return the matching chapter
-      return null;
+      throw new NotImplementedError('CFI parsing and chapter lookup not yet implemented');
     } catch (error) {
       console.error('Error getting chapter by CFI:', error);
       throw error;
@@ -230,7 +237,7 @@ class NavigationService {
     // You would need to:
     // 1. Parse the CFI to get the position within the chapter
     // 2. Calculate the progress based on the total chapter content
-    return 0.5; // Default to middle of chapter
+    throw new NotImplementedError('CFI parsing and progress calculation not yet implemented');
   }
 
   /**
@@ -242,7 +249,7 @@ class NavigationService {
     // You would need to:
     // 1. Parse the chapter's content
     // 2. Generate a valid CFI for the target position
-    return `epubcfi(${chapter.href}#point=${progress})`; // Simplified CFI format
+    throw new NotImplementedError('CFI generation not yet implemented');
   }
 }
 

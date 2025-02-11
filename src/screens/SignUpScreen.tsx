@@ -10,6 +10,7 @@ import { RootState } from '../store/store';
 import * as authService from '../services/auth';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { LanguageDialog } from '../components';
+import { useGoogleAuth } from '../services/auth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -29,6 +30,7 @@ const AVAILABLE_LANGUAGES = [
 export const SignUpScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state: RootState) => state.auth);
+  const { promptAsync } = useGoogleAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -128,7 +130,7 @@ export const SignUpScreen: React.FC<Props> = ({ navigation }) => {
     dispatch(setError(''));
 
     try {
-      const response = await authService.signInWithGoogle();
+      const response = await authService.signInWithGoogle(promptAsync);
       if (response.error) {
         dispatch(setError(response.error));
       } else if (response.user) {

@@ -3,6 +3,7 @@ import { GoogleCloudTTS } from './googleCloudTTS';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NetInfoState } from '@react-native-community/netinfo';
+import auth from '@react-native-firebase/auth';
 
 // Enable offline persistence
 firestore().settings({
@@ -172,7 +173,7 @@ class VocabularyService {
             const hasMore = querySnapshot.docs.length > pageSize;
             const docs = hasMore ? querySnapshot.docs.slice(0, -1) : querySnapshot.docs;
             
-            let items = docs.map(doc => ({
+            let items = docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
                 id: doc.id,
                 ...doc.data()
             })) as VocabularyItem[];
