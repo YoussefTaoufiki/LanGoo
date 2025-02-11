@@ -15,17 +15,23 @@ export default {
   ],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.yourcompany.lango'
+    bundleIdentifier: 'com.yourusername.lango'
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff'
     },
-    package: 'com.yourcompany.lango'
+    package: 'com.yourusername.lango'
   },
   web: {
     favicon: './assets/favicon.png'
   },
-  scheme: 'lango'
+  scheme: 'lango',
+  extra: {
+    // Google OAuth configuration
+    webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+    androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
+    iosClientId: process.env.GOOGLE_IOS_CLIENT_ID,
+  }
 }; 

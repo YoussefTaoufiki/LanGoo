@@ -21,10 +21,7 @@
     "types": [
       "react-native",
       "jest",
-      "@types/react",
-      "react-native-vector-icons",
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      "@types/react"
     ]
   },
   "include": [

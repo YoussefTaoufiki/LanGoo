@@ -4,6 +4,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../store/slices/authSlice';
+import Constants from 'expo-constants';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -23,10 +24,9 @@ const CURRENT_USER_KEY = '@current_user';
 
 // Initialize Google Sign In
 const [googleRequest, googleResponse, promptGoogleAsync] = Google.useAuthRequest({
-  expoClientId: 'YOUR_EXPO_CLIENT_ID',
-  androidClientId: 'YOUR_ANDROID_CLIENT_ID',
-  iosClientId: 'YOUR_IOS_CLIENT_ID',
-  webClientId: 'YOUR_WEB_CLIENT_ID',
+  clientId: Constants.expoConfig?.extra?.webClientId,
+  androidClientId: Constants.expoConfig?.extra?.androidClientId,
+  iosClientId: Constants.expoConfig?.extra?.iosClientId,
 });
 
 export const signUp = async (
