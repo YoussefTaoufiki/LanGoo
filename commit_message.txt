@@ -1,0 +1,12 @@
+[Cursor] Update dependencies for Expo Snack compatibility
+
+- Update Expo SDK to version 50.0.7 and related packages
+- Fix Firebase version to 10.7.1
+- Update React Native to 0.73.4
+- Update community packages to compatible versions:
+  - async-storage: 1.21.0
+  - netinfo: 11.1.0
+  - slider: 4.4.3
+  - picker: 2.6.1
+- Remove incompatible dependencies
+- Update UI-related packages to latest compatible versions 

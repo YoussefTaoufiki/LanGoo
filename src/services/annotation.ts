@@ -1,160 +1,161 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { app } from '@/config/firebase.web';
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 export interface Annotation {
-  id?: string;
-  bookId: string;
+  id: string;
   userId: string;
+  bookId: string;
   chapterId: string;
-  cfi: string;
-  createdAt: number;
-  updatedAt: number;
   text: string;
-  highlightedText: string;
+  note: string;
   color: string;
-  note?: string;
-  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
-class AnnotationService {
-  private collection = firestore().collection('annotations');
-
-  /**
-   * Create a new annotation
-   */
-  async createAnnotation(annotation: Omit<Annotation, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<Annotation> {
-    try {
-      const userId = auth().currentUser?.uid;
-      if (!userId) throw new Error('User not authenticated');
-
-      const now = Date.now();
-      const annotationData: Omit<Annotation, 'id'> = {
-        ...annotation,
-        userId,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      const docRef = await this.collection.add(annotationData);
-      return {
-        id: docRef.id,
-        ...annotationData,
-      };
-    } catch (error) {
-      console.error('Error creating annotation:', error);
-      throw error;
+export const addAnnotation = async (annotation: Omit<Annotation, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): Promise<Annotation> => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
     }
+
+    const newAnnotation: Annotation = {
+      ...annotation,
+      id: Math.random().toString(36).substring(7), // Generate a unique ID
+      userId: user.uid,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const annotationRef = doc(collection(db, 'annotations'));
+    await setDoc(annotationRef, newAnnotation);
+
+    return newAnnotation;
+  } catch (error) {
+    console.error('Error adding annotation:', error);
+    throw error;
   }
+};
 
-  /**
-   * Get all annotations for a book
-   */
-  async getAnnotations(bookId: string): Promise<Annotation[]> {
-    try {
-      const userId = auth().currentUser?.uid;
-      if (!userId) throw new Error('User not authenticated');
-
-      const snapshot = await this.collection
-        .where('userId', '==', userId)
-        .where('bookId', '==', bookId)
-        .orderBy('createdAt', 'desc')
-        .get();
-
-      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
-        id: doc.id,
-        ...doc.data(),
-      } as Annotation));
-    } catch (error) {
-      console.error('Error getting annotations:', error);
-      throw error;
+export const getAnnotations = async (bookId: string, chapterId: string): Promise<Annotation[]> => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
     }
+
+    const annotationsRef = collection(db, 'annotations');
+    const q = query(
+      annotationsRef,
+      where('userId', '==', user.uid),
+      where('bookId', '==', bookId),
+      where('chapterId', '==', chapterId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => doc.data() as Annotation);
+  } catch (error) {
+    console.error('Error getting annotations:', error);
+    throw error;
   }
+};
 
-  /**
-   * Update an annotation
-   */
-  async updateAnnotation(id: string, data: Partial<Omit<Annotation, 'id' | 'userId' | 'bookId' | 'createdAt'>>): Promise<void> {
-    try {
-      const userId = auth().currentUser?.uid;
-      if (!userId) throw new Error('User not authenticated');
-
-      const annotation = await this.collection.doc(id).get();
-      if (!annotation.exists) throw new Error('Annotation not found');
-      if (annotation.data()?.userId !== userId) throw new Error('Not authorized');
-
-      await this.collection.doc(id).update({
-        ...data,
-        updatedAt: Date.now(),
-      });
-    } catch (error) {
-      console.error('Error updating annotation:', error);
-      throw error;
+export const updateAnnotation = async (annotationId: string, updates: Partial<Annotation>): Promise<void> => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
     }
-  }
 
-  /**
-   * Delete an annotation
-   */
-  async deleteAnnotation(id: string): Promise<void> {
-    try {
-      const userId = auth().currentUser?.uid;
-      if (!userId) throw new Error('User not authenticated');
+    const annotationRef = doc(db, 'annotations', annotationId);
+    const annotationDoc = await getDoc(annotationRef);
 
-      const annotation = await this.collection.doc(id).get();
-      if (!annotation.exists) throw new Error('Annotation not found');
-      if (annotation.data()?.userId !== userId) throw new Error('Not authorized');
-
-      await this.collection.doc(id).delete();
-    } catch (error) {
-      console.error('Error deleting annotation:', error);
-      throw error;
+    if (!annotationDoc.exists()) {
+      throw new Error('Annotation not found');
     }
-  }
 
-  /**
-   * Get annotations by chapter
-   */
-  async getAnnotationsByChapter(bookId: string, chapterId: string): Promise<Annotation[]> {
-    try {
-      const userId = auth().currentUser?.uid;
-      if (!userId) throw new Error('User not authenticated');
-
-      const snapshot = await this.collection
-        .where('userId', '==', userId)
-        .where('bookId', '==', bookId)
-        .where('chapterId', '==', chapterId)
-        .orderBy('createdAt', 'desc')
-        .get();
-
-      return snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
-        id: doc.id,
-        ...doc.data(),
-      } as Annotation));
-    } catch (error) {
-      console.error('Error getting chapter annotations:', error);
-      throw error;
+    const annotation = annotationDoc.data() as Annotation;
+    if (annotation.userId !== user.uid) {
+      throw new Error('Not authorized to update this annotation');
     }
+
+    await setDoc(annotationRef, {
+      ...annotation,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Error updating annotation:', error);
+    throw error;
   }
+};
 
-  /**
-   * Export annotations
-   */
-  async exportAnnotations(bookId: string): Promise<string> {
-    try {
-      const annotations = await this.getAnnotations(bookId);
-      const exportData = annotations.map(annotation => ({
-        text: annotation.highlightedText,
-        note: annotation.note,
-        tags: annotation.tags,
-        createdAt: new Date(annotation.createdAt).toISOString(),
-      }));
-
-      return JSON.stringify(exportData, null, 2);
-    } catch (error) {
-      console.error('Error exporting annotations:', error);
-      throw error;
+export const deleteAnnotation = async (annotationId: string): Promise<void> => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
     }
-  }
-}
 
-export const annotationService = new AnnotationService(); 
+    const annotationRef = doc(db, 'annotations', annotationId);
+    const annotationDoc = await getDoc(annotationRef);
+
+    if (!annotationDoc.exists()) {
+      throw new Error('Annotation not found');
+    }
+
+    const annotation = annotationDoc.data() as Annotation;
+    if (annotation.userId !== user.uid) {
+      throw new Error('Not authorized to delete this annotation');
+    }
+
+    await deleteDoc(annotationRef);
+  } catch (error) {
+    console.error('Error deleting annotation:', error);
+    throw error;
+  }
+};
+
+export const getAnnotationsByChapter = async (bookId: string, chapterId: string): Promise<Annotation[]> => {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    const annotationsRef = collection(db, 'annotations');
+    const q = query(
+      annotationsRef,
+      where('userId', '==', user.uid),
+      where('bookId', '==', bookId),
+      where('chapterId', '==', chapterId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => doc.data() as Annotation);
+  } catch (error) {
+    console.error('Error getting chapter annotations:', error);
+    throw error;
+  }
+};
+
+export const exportAnnotations = async (bookId: string): Promise<string> => {
+  try {
+    const annotations = await getAnnotations(bookId, '');
+    const exportData = annotations.map(annotation => ({
+      text: annotation.text,
+      note: annotation.note,
+      createdAt: new Date(annotation.createdAt).toISOString(),
+    }));
+
+    return JSON.stringify(exportData, null, 2);
+  } catch (error) {
+    console.error('Error exporting annotations:', error);
+    throw error;
+  }
+}; 
