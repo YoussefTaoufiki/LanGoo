@@ -108,126 +108,92 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 
 # Scratchpad
 
-## Current Task: Resolving Missing Dependencies
+## Current Task: Resolving Expo Snack Dependencies
 
 ### Overview
-Need to add missing dependencies for Firebase, Google Cloud services, React Native components, and Material-UI related packages.
+Need to fix dependency issues for Expo Snack compatibility, including version mismatches and missing dependencies.
 
 ### Dependencies Analysis
 
-#### 1. Firebase Related Dependencies
-[X] Already have @react-native-firebase/app and auth
-[X] Added:
-  - @react-native-firebase/analytics
-  - @react-native-firebase/firestore
-  - @react-native-firebase/storage
-  - firebase/firestore (via firebase core)
-  - firebase/auth (via firebase core)
+#### 1. Version Updates Needed
+[X] Update Expo SDK related packages:
+  - expo-asset: ~9.0.2 -> ~11.0.3
+  - @expo/vector-icons: ^14.0.0 -> ^14.0.2
 
-#### 2. Google Cloud Services
-[X] Added:
-  - @google-cloud/text-to-speech
-  - @google-cloud/storage
+#### 2. Failed Network Dependencies
+[X] Fix network-related dependency issues:
+  - firebase@^10.8.0 -> ^10.7.1
+  - Removed tailwindcss (not needed for now)
+  - Removed @expo/metro-config (not needed in Snack)
+  - Removed @google-cloud/storage (will use Firebase Storage instead)
+  - Removed @google-cloud/text-to-speech (will use Expo AV)
 
-#### 3. React Native Components
-[X] Already have react-native-vector-icons
-[X] Already have react-native-fs
-[X] Already have react-native-zip-archive
-[X] Added:
-  - react-native-sound
-  - expo-auth-session/providers/google (via expo-auth-session)
-  - expo-random (note: deprecated, but required for now)
+#### 3. Firebase Related Issues
+[X] Fix Firebase module resolution:
+  - Removed native Firebase modules
+  - Using Firebase Web SDK instead
+  - Added Firebase core package
 
-#### 4. Material UI
-[X] Already have @mui/material
-[X] @mui/material/styles is included in @mui/material
+#### 4. Missing Peer Dependencies
+[X] Add missing peer dependencies:
+  - @types/react already present
+  - Added @mui/styles for material styles
+
+#### 5. Vector Icons Dependencies
+[X] Add Material Icons dependencies:
+  - Using @expo/vector-icons instead (more compatible with Expo)
 
 ### Implementation Plan
 
-1. Firebase Dependencies
-   [X] Install Firebase core modules
-   ```bash
-   npm install @react-native-firebase/analytics @react-native-firebase/firestore @react-native-firebase/storage
-   ```
+1. Update package.json
+   [X] Create new package.json with correct versions
+   [X] Remove incompatible dependencies
+   [X] Add Expo Snack compatible alternatives
 
-2. Google Cloud Services
-   [X] Install Google Cloud packages
-   ```bash
-   npm install @google-cloud/text-to-speech @google-cloud/storage
-   ```
+2. Fix Firebase Integration
+   [X] Switch to Web SDK version of Firebase
+   [X] Remove native Firebase modules
+   [X] Add Firebase Web configuration
 
-3. React Native Components
-   [X] Install additional React Native packages
-   ```bash
-   npm install react-native-sound
-   ```
-
-4. Expo Auth Session
-   [X] Configure Google provider
-   ```bash
-   npm install expo-auth-session expo-random
-   ```
+3. Update Asset Handling
+   [X] Create assets directory
+   [X] Add placeholder images
+   [X] Update image imports
 
 ### Progress Tracking
 
 #### Completed
-- [X] Initial package.json analysis
-- [X] Dependency categorization
-- [X] Implementation plan creation
-- [X] Installing Firebase dependencies
-- [X] Installing Google Cloud dependencies
-- [X] Installing React Native dependencies
-- [X] Installing Expo dependencies
-
-#### In Progress
-- [ ] Test Firebase connections
-- [ ] Test Google Cloud services
-- [ ] Update tsconfig.json types if needed
+- [X] Update Expo SDK package versions
+- [X] Fix network dependency issues
+- [X] Resolve Firebase module issues
+- [X] Add missing peer dependencies
+- [X] Configure vector icons
+- [X] Add placeholder images
 
 #### To Do
+- [ ] Test in Expo Snack
+- [ ] Update Firebase configuration for web
 - [ ] Test authentication flow
-- [ ] Test file operations
-- [ ] Configure Google Cloud credentials
-- [ ] Set up OAuth for authentication
-
-### Notes
-1. Some dependencies might require additional configuration:
-   - Google Cloud services will need credentials
-   - Firebase will need proper initialization
-   - Expo auth session will need OAuth client configuration
-
-2. Version Compatibility:
-   - All packages should be compatible with Expo SDK 52
-   - React Native version 0.73.6
-   - React version 18.2.0
-   - Firebase version 21.8.0 (all packages)
-
-3. Post-Installation Steps:
-   - Update Firebase initialization
-   - Configure Google Cloud credentials
-   - Set up OAuth for authentication
-   - Test each service individually
 
 ### Next Steps
-1. [ ] Test Firebase initialization and connections
-2. [ ] Set up Google Cloud credentials
-3. [ ] Configure OAuth for authentication
-4. [ ] Test all services
-5. [ ] Update documentation
+1. [ ] Test the updated package.json in Expo Snack
+2. [ ] Update Firebase configuration to use web SDK
+3. [ ] Test authentication with web SDK
+4. [ ] Update documentation
 
 ### Final Verification Checklist
 - [X] All dependencies installed
 - [X] No version conflicts
-- [ ] TypeScript types properly configured
-- [ ] Firebase properly initialized
-- [ ] Google Cloud credentials configured
+- [X] TypeScript types properly configured
+- [X] Placeholder assets added
+- [ ] Firebase web configuration
 - [ ] Authentication flow tested
 - [ ] File operations verified
 
 ### Known Issues
-1. expo-random is deprecated, but still required. Consider migrating to expo-crypto in the future.
-2. Some moderate severity vulnerabilities reported by npm audit - may need investigation.
-3. Need to set up proper environment variables for Firebase and Google Cloud credentials.
+1. Removed Google Cloud dependencies - will need to use alternative services
+2. Using Firebase Web SDK instead of native modules
+3. Using @expo/vector-icons instead of react-native-vector-icons for better compatibility
 
 
 
