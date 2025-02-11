@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Text, Button, Card, IconButton, Avatar } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
@@ -9,8 +9,13 @@ import { logout } from '../store/slices/authSlice';
 import { RootState } from '../store/store';
 import * as authService from '../services/auth';
 import { Appbar } from 'react-native-paper';
+import { Asset } from 'expo-asset';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
+
+// Replace the direct image imports with require statements
+const readingImage = require('../assets/reading.jpg');
+const focusImage = require('../assets/focus.jpg');
 
 export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useAppDispatch();
@@ -35,12 +40,12 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
 
       <ScrollView style={styles.content}>
         <Card style={styles.card} onPress={() => navigation.navigate('Reader', { bookId: 'sample' })}>
-          <Card.Cover source={require('../assets/reading.jpg')} />
+          <Image source={readingImage} style={styles.categoryImage} />
           <Card.Title title="Continue Reading" subtitle="Resume where you left off" />
         </Card>
 
         <Card style={styles.card} onPress={() => navigation.navigate('Focus')}>
-          <Card.Cover source={require('../assets/focus.jpg')} />
+          <Image source={focusImage} style={styles.categoryImage} />
           <Card.Title 
             title="Focus Mode" 
             subtitle="Stay focused with timed reading sessions"
@@ -99,5 +104,11 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 16,
+  },
+  categoryImage: {
+    height: 200,
+    width: '100%',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
 }); 

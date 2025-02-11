@@ -108,146 +108,126 @@ If needed, you can further use the `web_scraper.py` file to scrape the web page 
 
 # Scratchpad
 
-# Current Task: Language Selection and Library Implementation
+## Current Task: Resolving Missing Dependencies
 
-## Overview
-Implementing a comprehensive onboarding and library system that starts with language selection and presents a beautifully designed book library interface. The system will integrate with Firebase for book storage and management, organized by language and proficiency levels.
+### Overview
+Need to add missing dependencies for Firebase, Google Cloud services, React Native components, and Material-UI related packages.
 
-## Implementation Plan
+### Dependencies Analysis
 
-### 1. Language Selection Dialog
-[X] Create LanguageSelectionDialog component
-  - Modern, welcoming design
-  - Language options with flags/icons
-  - Proficiency level selection (A1-C2)
-  - Persist selection in user preferences
-  - Integration with Firebase user profile
+#### 1. Firebase Related Dependencies
+[X] Already have @react-native-firebase/app and auth
+[X] Added:
+  - @react-native-firebase/analytics
+  - @react-native-firebase/firestore
+  - @react-native-firebase/storage
+  - firebase/firestore (via firebase core)
+  - firebase/auth (via firebase core)
 
-### 2. Firebase Integration
-[X] Set up Firebase Storage structure
-  - Books organized by language
-  - Subdirectories for proficiency levels
-  - Metadata storage for book information
-  - Caching strategy for better performance
-[X] Create Firebase service for book management
-  - Book retrieval by language/level
-  - Progress tracking
-  - Recently read books
-  - User preferences storage
+#### 2. Google Cloud Services
+[X] Added:
+  - @google-cloud/text-to-speech
+  - @google-cloud/storage
 
-### 3. Library UI Components
-[X] Create LibraryView component
-  - White plate design for book displays
-  - Subtle shadows and elevation
-  - Responsive grid layout
-  - Animation for hover/selection
-[X] Implement LastReadBook component
-  - Prominent placement at top
-  - Larger size than other books
-  - Progress indicator
-  - Quick resume button
+#### 3. React Native Components
+[X] Already have react-native-vector-icons
+[X] Already have react-native-fs
+[X] Already have react-native-zip-archive
+[X] Added:
+  - react-native-sound
+  - expo-auth-session/providers/google (via expo-auth-session)
+  - expo-random (note: deprecated, but required for now)
 
-### 4. Book Display Components
-[X] Create BookCard component
-  - Cover image display
-  - Title and author
-  - Progress indicator
-  - Level badge
-  - Hover effects
-[X] Implement BookGrid component
-  - Responsive grid layout
-  - Filtering by level
-  - Sorting options
-  - Lazy loading
+#### 4. Material UI
+[X] Already have @mui/material
+[X] @mui/material/styles is included in @mui/material
 
-### 5. Navigation and Routing
-[ ] Set up protected routes
-[ ] Implement navigation flow
-  - Initial language selection
-  - Library view
-  - Book detail view
-  - Reading interface
+### Implementation Plan
 
-### 6. User Experience Features
-[X] Add loading states
-[X] Implement error handling
-[X] Add empty state designs
-[ ] Create onboarding tooltips
-[X] Add search functionality
+1. Firebase Dependencies
+   [X] Install Firebase core modules
+   ```bash
+   npm install @react-native-firebase/analytics @react-native-firebase/firestore @react-native-firebase/storage
+   ```
 
-### 7. Visual Design Elements
-[X] Design system setup
-  - Color palette
-  - Typography
-  - Spacing system
-  - Shadow levels
-[X] Animation system
-  - Page transitions
-  - Card hover effects
-  - Loading animations
-  - Micro-interactions
+2. Google Cloud Services
+   [X] Install Google Cloud packages
+   ```bash
+   npm install @google-cloud/text-to-speech @google-cloud/storage
+   ```
 
-## Technical Specifications
+3. React Native Components
+   [X] Install additional React Native packages
+   ```bash
+   npm install react-native-sound
+   ```
 
-### Firebase Structure
-```
-/books
-  /{language}
-    /{level}
-      /{bookId}
-        - title
-        - author
-        - coverUrl
-        - description
-        - totalChapters
-        - difficulty
-        - metadata
-```
+4. Expo Auth Session
+   [X] Configure Google provider
+   ```bash
+   npm install expo-auth-session expo-random
+   ```
 
-### Component Hierarchy
-```
-App
-├── LanguageSelectionDialog
-├── LibraryView
-│   ├── LastReadBook
-│   ├── BookGrid
-│   │   └── BookCard
-│   └── FilterControls
-└── BookDetailView
-```
+### Progress Tracking
 
-### State Management
-- User preferences in Redux
-- Book data cached in Redux
-- Reading progress synced with Firebase
-- Language selection persisted
+#### Completed
+- [X] Initial package.json analysis
+- [X] Dependency categorization
+- [X] Implementation plan creation
+- [X] Installing Firebase dependencies
+- [X] Installing Google Cloud dependencies
+- [X] Installing React Native dependencies
+- [X] Installing Expo dependencies
 
-### Design Guidelines
-- White background for book plates
-- Subtle shadows (box-shadow: 0 2px 4px rgba(0,0,0,0.1))
-- Card elevation on hover
-- Smooth transitions (300ms ease-in-out)
-- Responsive breakpoints for different screen sizes
+#### In Progress
+- [ ] Test Firebase connections
+- [ ] Test Google Cloud services
+- [ ] Update tsconfig.json types if needed
 
-Progress:
-- [X] Created all main UI components (LibraryView, LastReadBook, BookGrid, BookCard)
-- [X] Implemented Firebase integration for book management
-- [X] Added search and filtering functionality
-- [X] Implemented responsive design and animations
-- [X] Set up theme system with light/dark mode support
-- [ ] Need to fix TypeScript/linter errors
-- [ ] Need to implement protected routes and navigation
-- [ ] Need to add onboarding tooltips
-- [ ] Need to implement book detail view and reading interface
+#### To Do
+- [ ] Test authentication flow
+- [ ] Test file operations
+- [ ] Configure Google Cloud credentials
+- [ ] Set up OAuth for authentication
 
-Next Steps:
-1. Fix TypeScript/linter errors by:
-   - Installing proper @types/mui__material and @types/mui__icons-material
-   - Adding proper theme typing for styled components
-   - Adding proper Firebase type declarations
-2. Implement protected routes and navigation
-3. Add onboarding tooltips
-4. Create book detail view and reading interface
+### Notes
+1. Some dependencies might require additional configuration:
+   - Google Cloud services will need credentials
+   - Firebase will need proper initialization
+   - Expo auth session will need OAuth client configuration
+
+2. Version Compatibility:
+   - All packages should be compatible with Expo SDK 52
+   - React Native version 0.73.6
+   - React version 18.2.0
+   - Firebase version 21.8.0 (all packages)
+
+3. Post-Installation Steps:
+   - Update Firebase initialization
+   - Configure Google Cloud credentials
+   - Set up OAuth for authentication
+   - Test each service individually
+
+### Next Steps
+1. [ ] Test Firebase initialization and connections
+2. [ ] Set up Google Cloud credentials
+3. [ ] Configure OAuth for authentication
+4. [ ] Test all services
+5. [ ] Update documentation
+
+### Final Verification Checklist
+- [X] All dependencies installed
+- [X] No version conflicts
+- [ ] TypeScript types properly configured
+- [ ] Firebase properly initialized
+- [ ] Google Cloud credentials configured
+- [ ] Authentication flow tested
+- [ ] File operations verified
+
+### Known Issues
+1. expo-random is deprecated, but still required. Consider migrating to expo-crypto in the future.
+2. Some moderate severity vulnerabilities reported by npm audit - may need investigation.
+3. Need to set up proper environment variables for Firebase and Google Cloud credentials.
 
 
 
