@@ -38,17 +38,19 @@ export default {
   extra: {
     isExpoSnack: true,
     apiUrl: 'https://api.lango-app.com',
-    firebaseApiKey: '{{FIREBASE_API_KEY}}',
-    firebaseAuthDomain: '{{FIREBASE_AUTH_DOMAIN}}',
-    firebaseProjectId: '{{FIREBASE_PROJECT_ID}}',
-    firebaseStorageBucket: '{{FIREBASE_STORAGE_BUCKET}}',
-    firebaseMessagingSenderId: '{{FIREBASE_MESSAGING_SENDER_ID}}',
-    firebaseAppId: '{{FIREBASE_APP_ID}}',
-    firebaseMeasurementId: '{{FIREBASE_MEASUREMENT_ID}}',
-    openaiApiKey: '{{OPENAI_API_KEY}}',
+    firebaseConfig: {
+      apiKey: process.env.FIREBASE_API_KEY || '{{FIREBASE_API_KEY}}',
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN || '{{FIREBASE_AUTH_DOMAIN}}',
+      projectId: process.env.FIREBASE_PROJECT_ID || '{{FIREBASE_PROJECT_ID}}',
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET || '{{FIREBASE_STORAGE_BUCKET}}',
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '{{FIREBASE_MESSAGING_SENDER_ID}}',
+      appId: process.env.FIREBASE_APP_ID || '{{FIREBASE_APP_ID}}',
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID || '{{FIREBASE_MEASUREMENT_ID}}'
+    },
+    openaiApiKey: process.env.OPENAI_API_KEY || '{{OPENAI_API_KEY}}',
     openaiModel: 'gpt-4',
     eas: {
-      projectId: '{{EAS_PROJECT_ID}}'
+      projectId: process.env.EAS_PROJECT_ID || '{{EAS_PROJECT_ID}}'
     }
   }
 }; 

@@ -1,18 +1,34 @@
+// Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require('@expo/metro-config');
 
-/**
- * Metro configuration
- * https://reactnative.dev/docs/metro
- *
- * @type {import('@react-native/metro-config').MetroConfig}
- */
+/** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
-module.exports = {
-  ...config,
-  resolver: {
-    ...config.resolver,
-    assetExts: [...config.resolver.assetExts, 'db', 'mp3', 'ttf', 'obj', 'png', 'jpg'],
-    sourceExts: [...config.resolver.sourceExts, 'svg']
-  }
-};
+// Add custom configurations
+config.resolver.sourceExts = [
+  'js',
+  'jsx',
+  'json',
+  'ts',
+  'tsx',
+  'cjs',
+  'mjs',
+];
+
+config.resolver.assetExts = [
+  'bmp',
+  'gif',
+  'jpg',
+  'jpeg',
+  'png',
+  'psd',
+  'svg',
+  'webp',
+  'mp3',
+  'wav',
+  'm4a',
+  'ttf',
+  'otf',
+];
+
+module.exports = config;
