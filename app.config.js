@@ -15,34 +15,40 @@ export default {
   ],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.yourusername.lango'
+    bundleIdentifier: 'com.yourcompany.lango'
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#ffffff'
     },
-    package: 'com.yourusername.lango'
+    package: 'com.yourcompany.lango'
   },
   web: {
     favicon: './assets/favicon.png'
   },
-  scheme: 'lango',
-  extra: {
-    // Firebase configuration
-    firebaseApiKey: process.env.FIREBASE_API_KEY,
-    firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
-    firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-    firebaseAppId: process.env.FIREBASE_APP_ID,
-    firebaseAnalyticsId: process.env.FIREBASE_ANALYTICS_ID,
-    // Google OAuth configuration
-    webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
-    androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID,
-    iosClientId: process.env.GOOGLE_IOS_CLIENT_ID,
-  },
   plugins: [
-    'expo-dev-client'
-  ]
+    'expo-localization',
+    '@react-native-firebase/app',
+    '@react-native-firebase/auth',
+    '@react-native-firebase/firestore',
+    '@react-native-firebase/storage',
+    '@react-native-firebase/analytics'
+  ],
+  extra: {
+    isExpoSnack: true,
+    apiUrl: 'https://api.lango-app.com',
+    firebaseApiKey: '{{FIREBASE_API_KEY}}',
+    firebaseAuthDomain: '{{FIREBASE_AUTH_DOMAIN}}',
+    firebaseProjectId: '{{FIREBASE_PROJECT_ID}}',
+    firebaseStorageBucket: '{{FIREBASE_STORAGE_BUCKET}}',
+    firebaseMessagingSenderId: '{{FIREBASE_MESSAGING_SENDER_ID}}',
+    firebaseAppId: '{{FIREBASE_APP_ID}}',
+    firebaseMeasurementId: '{{FIREBASE_MEASUREMENT_ID}}',
+    openaiApiKey: '{{OPENAI_API_KEY}}',
+    openaiModel: 'gpt-4',
+    eas: {
+      projectId: '{{EAS_PROJECT_ID}}'
+    }
+  }
 }; 

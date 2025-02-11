@@ -1,9 +1,7 @@
-import { TextToSpeechClient } from '@google-cloud/text-to-speech';
-import { protos } from '@google-cloud/text-to-speech';
-import { Storage } from '@google-cloud/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import auth from '@react-native-firebase/auth';
+import { apiClient, TTSRequest } from './api';
 
 export interface TTSVoice {
   name: string;
@@ -30,35 +28,16 @@ export interface TTSCacheEntry {
 }
 
 class TTSService {
-  private client: TextToSpeechClient;
-  private storage: Storage;
   private cacheCollection = 'tts_cache';
   private maxCacheAge = 7 * 24 * 60 * 60 * 1000; // 7 days
-
-  constructor() {
-    this.client = new TextToSpeechClient({
-      keyFilename: process.env.GOOGLE_CLOUD_CREDENTIALS,
-    });
-    this.storage = new Storage({
-      keyFilename: process.env.GOOGLE_CLOUD_CREDENTIALS,
-    });
-  }
 
   /**
    * List available voices
    */
   async listVoices(languageCode?: string): Promise<TTSVoice[]> {
     try {
-      const [voices] = await this.client.listVoices({});
-      return voices.voices
-        ?.filter((voice: protos.google.cloud.texttospeech.v1.IVoice) => 
-          !languageCode || voice.languageCodes?.[0] === languageCode)
-        .map((voice: protos.google.cloud.texttospeech.v1.IVoice) => ({
-          name: voice.name || '',
-          languageCode: voice.languageCodes?.[0] || '',
-          ssmlGender: (voice.ssmlGender as 'MALE' | 'FEMALE' | 'NEUTRAL') || 'NEUTRAL',
-          naturalSampleRateHertz: voice.naturalSampleRateHertz || 24000,
-        })) || [];
+      const response = await apiClient.listVoices(languageCode);
+      return response.voices;
     } catch (error) {
       console.error('Error listing voices:', error);
       throw error;
@@ -76,26 +55,22 @@ class TTSService {
         return cachedAudio;
       }
 
-      // Synthesize audio
-      const request = {
-        input: { text },
-        voice: config.voice,
-        audioConfig: {
-          audioEncoding: config.audioConfig.audioEncoding,
-          pitch: config.audioConfig.pitch,
-          speakingRate: config.audioConfig.speakingRate,
-          volumeGainDb: config.audioConfig.volumeGainDb,
-        },
+      // Request speech synthesis from our API
+      const request: TTSRequest = {
+        text,
+        language: config.voice.languageCode,
+        voice: config.voice.name,
+        speed: config.audioConfig.speakingRate,
       };
 
-      const [response] = await this.client.synthesizeSpeech(request);
+      const response = await apiClient.synthesizeSpeech(request);
 
-      if (!response.audioContent) {
-        throw new Error('No audio content received');
+      if (response.error) {
+        throw new Error(response.error);
       }
 
-      // Save to cache
-      const audioPath = await this.saveToCache(text, response.audioContent as Buffer, config);
+      // Download and save to cache
+      const audioPath = await this.saveToCache(text, response.audioUrl, config);
       return audioPath;
     } catch (error) {
       console.error('Error synthesizing speech:', error);
@@ -137,12 +112,12 @@ class TTSService {
   /**
    * Save audio to cache
    */
-  private async saveToCache(text: string, audioContent: Buffer, config: TTSConfig): Promise<string> {
+  private async saveToCache(text: string, audioUrl: string, config: TTSConfig): Promise<string> {
     try {
       const userId = auth().currentUser?.uid;
       if (!userId) throw new Error('User not authenticated');
 
-      // Save audio file
+      // Download and save audio file
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${
         config.audioConfig.audioEncoding.toLowerCase()
       }`;
@@ -151,21 +126,20 @@ class TTSService {
       await FileSystem.makeDirectoryAsync(`${FileSystem.cacheDirectory}tts/`, {
         intermediates: true,
       });
-      await FileSystem.writeAsStringAsync(filePath, audioContent.toString('base64'), {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+
+      const { uri } = await FileSystem.downloadAsync(audioUrl, filePath);
 
       // Save cache entry
       const cacheKey = this.getCacheKey(text, config);
       const cacheEntry: TTSCacheEntry = {
         text,
-        audioPath: filePath,
+        audioPath: uri,
         config,
         timestamp: Date.now(),
       };
       await AsyncStorage.setItem(cacheKey, JSON.stringify(cacheEntry));
 
-      return filePath;
+      return uri;
     } catch (error) {
       console.error('Error saving to cache:', error);
       throw error;

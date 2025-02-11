@@ -1,4 +1,4 @@
-import { firestore, auth } from '../firebase';
+import { firestore, firebaseAuth } from '../firebase';
 import type { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { 
   collection,
@@ -107,14 +107,14 @@ class MultipleChoiceGameService {
   }
 
   async submitScore(score: Omit<MultipleChoiceScore, 'id' | 'userId' | 'userName'>): Promise<MultipleChoiceScore> {
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
+    const user = firebaseAuth.currentUser;
+    if (!user) {
       throw new Error('User must be logged in to submit score');
     }
 
     const scoreData: Omit<MultipleChoiceScore, 'id'> = {
-      userId: currentUser.uid,
-      userName: currentUser.displayName || 'Anonymous',
+      userId: user.uid,
+      userName: user.displayName || 'Anonymous',
       ...score
     };
 

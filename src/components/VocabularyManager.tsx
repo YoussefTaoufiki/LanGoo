@@ -27,8 +27,9 @@ import {
     exportVocabulary,
     resetPagination,
     fetchMoreVocabulary,
+    VocabularyWord
 } from '../store/slices/vocabularySlice';
-import { VocabularyItem, VocabularyFilter } from '../services/vocabularyService';
+import { VocabularyFilter } from '../services/vocabularyService';
 import { formatTime } from '../utils/timeUtils';
 import { Button } from './Button';
 
@@ -38,7 +39,7 @@ const VocabularyManager: React.FC = () => {
     const theme = useCustomTheme();
     const dispatch = useDispatch<AppDispatch>();
     const { 
-        items, 
+        words, 
         loading, 
         loadingMore,
         error, 
@@ -117,7 +118,7 @@ const VocabularyManager: React.FC = () => {
         }
     };
 
-    const renderVocabularyItem = ({ item }: { item: VocabularyItem }) => (
+    const renderVocabularyItem = ({ item }: { item: VocabularyWord }) => (
         <TouchableOpacity
             style={[styles.card, { backgroundColor: theme.colors.surface }]}
             onPress={() => dispatch(selectItem(item))}
@@ -125,7 +126,6 @@ const VocabularyManager: React.FC = () => {
             <View style={styles.cardHeader}>
                 <View style={styles.wordContainer}>
                     <Text style={[styles.word, { color: theme.colors.primary }]}>{item.word}</Text>
-                    <Text style={styles.phonetic}>{item.phonetic}</Text>
                 </View>
                 <View style={styles.actions}>
                     <TouchableOpacity onPress={() => handlePlayAudio(item.word, item.language)}>
@@ -143,28 +143,11 @@ const VocabularyManager: React.FC = () => {
             
             <Text style={styles.translation}>{item.translation}</Text>
             
-            {item.examples.length > 0 && (
-                <View style={styles.examples}>
-                    <Text style={styles.exampleLabel}>Examples:</Text>
-                    {item.examples.map((example, index) => (
-                        <Text key={index} style={styles.example}>{example}</Text>
-                    ))}
-                </View>
-            )}
-            
-            <View style={styles.footer}>
-                <View style={styles.tags}>
-                    {item.tags.map((tag, index) => (
-                        <View key={index} style={[styles.tag, { backgroundColor: theme.colors.primary + '20' }]}>
-                            <Text style={[styles.tagText, { color: theme.colors.primary }]}>{tag}</Text>
-                        </View>
-                    ))}
-                </View>
-                
+            <View style={styles.footer}>            
                 <View style={styles.stats}>
                     <Text style={styles.statText}>Mastery: {item.masteryScore}%</Text>
-                    <Text style={styles.statText}>Practiced: {item.practiceCount} times</Text>
-                    <Text style={styles.statText}>Last: {formatTime(item.lastPracticed)}</Text>
+                    <Text style={styles.statText}>Last Reviewed: {formatTime(item.lastReviewed || 0)}</Text>
+                    <Text style={styles.statText}>Proficiency: {item.proficiency || 0}%</Text>
                 </View>
                 
                 <TouchableOpacity
@@ -255,7 +238,7 @@ const VocabularyManager: React.FC = () => {
                 <Text style={[styles.error, { color: theme.colors.error }]}>{error}</Text>
             ) : (
                 <FlatList
-                    data={items}
+                    data={words}
                     renderItem={renderVocabularyItem}
                     keyExtractor={(item) => item.id}
                     contentContainerStyle={styles.list}

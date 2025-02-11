@@ -1,5 +1,5 @@
-import { firestore } from '../firebase';
-import { auth } from '../firebase';
+import { firestore, firebaseAuth } from '../firebase';
+import type { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { 
   DocumentData, 
   QueryDocumentSnapshot,
@@ -131,7 +131,7 @@ class WritingExerciseService {
     content: string
   ): Promise<WritingSubmission> {
     try {
-      const currentUser = auth.currentUser;
+      const currentUser = firebaseAuth.currentUser;
       if (!currentUser) {
         throw new Error('User must be logged in to submit writing');
       }
@@ -275,6 +275,15 @@ class WritingExerciseService {
       console.error('Error getting writing leaderboard:', error);
       throw error;
     }
+  }
+
+  async submitScore(score: Omit<WritingScore, 'id' | 'userId' | 'userName'>) {
+    const user = firebaseAuth.currentUser;
+    if (!user) {
+      throw new Error('User must be logged in to submit score');
+    }
+
+    // ... rest of the method ...
   }
 }
 

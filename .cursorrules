@@ -268,6 +268,89 @@ Solution: Added explicit type annotation using FirebaseFirestoreTypes.QueryDocum
 - Document any patterns in type declarations that should be consistent across the codebase
 - Consider adding TypeScript configuration to prevent implicit any types in the future
 
+## Current Task: Fix Expo Snack Dependency Issues
+
+### Issue Categories
+
+1. Firebase Core Dependencies
+[X] firebase@^9.23.0 resolution failure
+[X] firebase-admin@^11.11.0 incompatibility
+[X] @react-native-firebase/* version conflicts
+
+2. Development Dependencies
+[X] @types/react-native-fs resolution issue
+[X] Move type definitions to devDependencies
+
+3. Node.js Server Dependencies in Client
+[X] @google-cloud/text-to-speech incompatibility
+[X] @google-cloud/storage incompatibility
+
+4. Web-only Dependencies in React Native
+[X] @mui/material and related packages incompatibility
+[X] Replace with React Native Paper components
+
+5. Missing or Invalid Dependencies
+[X] @expo/metro-config version specification
+
+### Action Plan
+
+#### 1. Firebase Dependencies
+[X] Update firebase to v10.7.0
+[X] Remove firebase-admin (server-side only)
+[X] Update @react-native-firebase/* packages to v18.7.3
+
+#### 2. Development Dependencies
+[X] Move @types/* packages to devDependencies
+[X] Update type declarations versions
+
+#### 3. Server Dependencies
+[X] Remove @google-cloud/* packages
+[X] Create backend API endpoints for these services
+[X] Update frontend code to use API endpoints
+
+#### 4. UI Dependencies
+[X] Remove all @mui/* packages
+[X] Remove @emotion/* packages
+[X] Ensure react-native-paper is properly configured
+
+#### 5. Expo Configuration
+[X] Add @expo/metro-config with specific version
+[X] Update metro.config.js if needed
+
+### Progress Tracking
+
+[X] Initial package.json backup
+[X] Firebase dependencies update
+[X] Development dependencies reorganization
+[X] Server dependencies removal and API creation
+[X] UI dependencies cleanup
+[X] Expo configuration update
+[X] Testing in Expo Snack environment
+
+### Notes
+
+- Keep track of any breaking changes in Firebase v10
+- Document API endpoints needed for replaced server dependencies
+- Note any UI components that need recreation in React Native Paper
+- Monitor bundle size and performance impact
+- Configuration placeholders in app.config.js will be replaced with actual values in Expo Snack
+- All API keys and sensitive data are handled through backend authentication
+- Users only need to subscribe to access features, no API key management needed
+
+### Lessons Learned
+
+- Expo Snack has specific version requirements for Firebase
+- Server-side packages should not be included in client-side bundle
+- Web-only UI libraries should be avoided in React Native
+- Type definitions should be in devDependencies
+- Always specify exact versions for Expo configuration packages
+- React Native Paper is the preferred UI library for React Native apps
+- Vector Icons should be explicitly installed when using React Native Paper
+- Firebase v10+ is required for Expo Snack compatibility
+- Use Constants.expoConfig instead of process.env in Expo Snack
+- Configuration should be handled through Expo's extra field
+- Sensitive data should never be included in client-side code
+
 
 
 

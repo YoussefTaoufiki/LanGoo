@@ -11,6 +11,16 @@ interface MultipleChoiceState {
   leaderboard: MultipleChoiceScore[];
   loading: boolean;
   error: string | null;
+  score: number;
+  totalQuestions: number;
+  currentQuestion: number;
+  history: {
+    question: string;
+    correctAnswer: string;
+    userAnswer: string;
+    isCorrect: boolean;
+    timestamp: number;
+  }[];
 }
 
 const initialState: MultipleChoiceState = {
@@ -23,6 +33,10 @@ const initialState: MultipleChoiceState = {
   leaderboard: [],
   loading: false,
   error: null,
+  score: 0,
+  totalQuestions: 0,
+  currentQuestion: 0,
+  history: [],
 };
 
 export const generateQuestions = createAsyncThunk(
@@ -112,6 +126,31 @@ const multipleChoiceSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    incrementScore: (state) => {
+      state.score += 1;
+    },
+    setTotalQuestions: (state, action: PayloadAction<number>) => {
+      state.totalQuestions = action.payload;
+    },
+    setCurrentQuestion: (state, action: PayloadAction<number>) => {
+      state.currentQuestion = action.payload;
+    },
+    addToHistory: (state, action: PayloadAction<{
+      question: string;
+      correctAnswer: string;
+      userAnswer: string;
+      isCorrect: boolean;
+    }>) => {
+      state.history.push({
+        ...action.payload,
+        timestamp: Date.now(),
+      });
+    },
+    resetGame: (state) => {
+      state.score = 0;
+      state.currentQuestion = 0;
+      state.totalQuestions = 0;
+    },
   },
   extraReducers: (builder) => {
     // Generate questions
@@ -188,6 +227,11 @@ export const {
   previousQuestion,
   endGame,
   clearError,
+  incrementScore,
+  setTotalQuestions,
+  setCurrentQuestion,
+  addToHistory,
+  resetGame,
 } = multipleChoiceSlice.actions;
 
 export default multipleChoiceSlice.reducer; 

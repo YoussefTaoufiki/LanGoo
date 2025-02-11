@@ -1,6 +1,6 @@
-import { v1 } from '@google-cloud/text-to-speech';
 import RNFS from 'react-native-fs';
 import Sound from 'react-native-sound';
+import { apiClient, TTSRequest } from './api';
 
 interface TTSOptions {
   languageCode?: string;
@@ -11,11 +11,7 @@ interface TTSOptions {
 }
 
 export class GoogleCloudTTS {
-  private client: v1.TextToSpeechClient;
-
   constructor() {
-    this.client = new v1.TextToSpeechClient();
-
     // Initialize react-native-sound
     Sound.setCategory('Playback');
   }
@@ -37,30 +33,25 @@ export class GoogleCloudTTS {
         // Ensure cache directory exists
         await RNFS.mkdir(cacheDir);
 
-        // Request speech synthesis
-        const [response] = await this.client.synthesizeSpeech({
-          input: { text },
-          voice: {
-            languageCode: options.languageCode || this.getLanguageCode(lang),
-            name: options.name || this.getVoiceName(lang),
-            ssmlGender: options.ssmlGender || 'NEUTRAL',
-          },
-          audioConfig: {
-            audioEncoding: options.audioEncoding || 'MP3',
-            speakingRate: options.speakingRate || 1.0,
-          },
-        } as any); // Type assertion needed due to incomplete types
+        // Request speech synthesis from our API
+        const request: TTSRequest = {
+          text,
+          language: this.getLanguageCode(lang),
+          voice: options.name || this.getVoiceName(lang),
+          speed: options.speakingRate || 1.0,
+        };
 
-        if (!response.audioContent) {
-          throw new Error('No audio content received from Google Cloud TTS');
+        const response = await apiClient.synthesizeSpeech(request);
+
+        if (response.error) {
+          throw new Error(response.error);
         }
 
-        // Save audio to cache
-        await RNFS.writeFile(
-          cachePath,
-          Buffer.from(response.audioContent as Uint8Array).toString('base64'),
-          'base64'
-        );
+        // Download and save audio to cache
+        await RNFS.downloadFile({
+          fromUrl: response.audioUrl,
+          toFile: cachePath,
+        }).promise;
       }
 
       // Play the audio

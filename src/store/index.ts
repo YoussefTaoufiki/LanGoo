@@ -1,8 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
+import focusReducer from './slices/focusSlice';
+import multipleChoiceReducer from './slices/multipleChoiceSlice';
+import vocabularyReducer from './slices/vocabularySlice';
 
 export const store = configureStore({
   reducer: {
-    // Add reducers here as needed
+    focus: focusReducer,
+    multipleChoice: multipleChoiceReducer,
+    vocabulary: vocabularyReducer,
   },
 });
 

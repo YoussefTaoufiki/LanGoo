@@ -1,33 +1,19 @@
 import { useState, useEffect } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { firebaseAuth } from '../firebase';
 
-interface UseAuthReturn {
-  user: User | null;
-  isLoading: boolean;
-  error: Error | null;
-}
-
-export const useAuth = (): UseAuthReturn => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export const useAuth = () => {
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (user) => {
-        setUser(user);
-        setIsLoading(false);
-      },
-      (error) => {
-        setError(error);
-        setIsLoading(false);
-      }
-    );
+    const unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
+      setUser(user);
+      setLoading(false);
+    });
 
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
-  return { user, isLoading, error };
+  return { user, loading };
 }; 

@@ -1,41 +1,62 @@
-import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
-interface Config {
+export interface Config {
+  api: {
+    baseUrl: string;
+  };
+  firebase: {
+    apiKey: string;
+    authDomain: string;
+    projectId: string;
+    storageBucket: string;
+    messagingSenderId: string;
+    appId: string;
+    measurementId?: string;
+  };
   openai: {
     apiKey: string;
-  };
-  expo: {
-    clientId: string;
-  };
-  google: {
-    webClientId: string;
-    iosClientId: string;
-    androidClientId: string;
-  };
-  ios: {
-    bundleId: string;
-  };
-  android: {
-    packageName: string;
+    model: string;
   };
 }
 
-export const config: Config = {
+// Default configuration for Expo Snack
+const defaultConfig: Config = {
+  api: {
+    baseUrl: 'https://api.lango-app.com',
+  },
+  firebase: {
+    apiKey: Constants.expoConfig?.extra?.firebaseApiKey ?? '',
+    authDomain: Constants.expoConfig?.extra?.firebaseAuthDomain ?? '',
+    projectId: Constants.expoConfig?.extra?.firebaseProjectId ?? '',
+    storageBucket: Constants.expoConfig?.extra?.firebaseStorageBucket ?? '',
+    messagingSenderId: Constants.expoConfig?.extra?.firebaseMessagingSenderId ?? '',
+    appId: Constants.expoConfig?.extra?.firebaseAppId ?? '',
+    measurementId: Constants.expoConfig?.extra?.firebaseMeasurementId,
+  },
   openai: {
-    apiKey: process.env.OPENAI_API_KEY || '',
+    apiKey: Constants.expoConfig?.extra?.openaiApiKey ?? '',
+    model: Constants.expoConfig?.extra?.openaiModel ?? 'gpt-4',
   },
-  expo: {
-    clientId: process.env.EXPO_CLIENT_ID || '',
-  },
-  google: {
-    webClientId: process.env.GOOGLE_WEB_CLIENT_ID || '',
-    iosClientId: process.env.GOOGLE_IOS_CLIENT_ID || '',
-    androidClientId: process.env.GOOGLE_ANDROID_CLIENT_ID || '',
-  },
-  ios: {
-    bundleId: 'com.yourcompany.lango',
-  },
-  android: {
-    packageName: 'com.yourcompany.lango',
-  },
-}; 
+};
+
+// Get environment-specific configuration
+export const getEnvVars = (): Config => {
+  // In Expo Snack, we'll always use the default config
+  if (Constants.expoConfig?.extra?.isExpoSnack) {
+    return defaultConfig;
+  }
+
+  // For development and production environments
+  if (Constants.expoConfig?.extra?.releaseChannel === 'production') {
+    return {
+      ...defaultConfig,
+      api: {
+        baseUrl: Constants.expoConfig?.extra?.apiUrl ?? defaultConfig.api.baseUrl,
+      },
+    };
+  }
+
+  return defaultConfig;
+};
+
+export const config = getEnvVars(); 
